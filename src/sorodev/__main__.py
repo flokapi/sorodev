@@ -1,9 +1,9 @@
 import argparse
 
-import install_soroban
-import install_app
-import deploy
-import invoke
+from . import install_soroban
+from . import install_app
+from . import deploy
+from . import invoke
 
 
 def parseCommand():

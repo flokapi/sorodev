@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "sorodev"
+version = "0.0.13"
+description = "Publish multiple docker containers using nginx"
+authors = ["flokapi <flokapi@pm.me>"]
+license = "GPL-3.0-only"
+readme = "README.md"
+
+packages = [{ include = "sorodev", from = "src" }]
+
+[tool.poetry.urls]
+homepage = "https://github.com/flokapi/dockup"
+repository = "https://github.com/flokapi/dockup"
+documentation = "https://github.com/flokapi/dockup"
+
+[tool.poetry.dependencies]
+pyyaml = "*"
+python = "^3.7"
+platformdirs = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+float_to_top = true

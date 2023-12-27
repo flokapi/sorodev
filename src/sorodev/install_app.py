@@ -1,8 +1,8 @@
 from pathlib import Path
 
 
-import utils
-import constants
+from . import utils
+from . import constants
 
 
 def write_soroban_dev_config(app_path, name, app_type):

@@ -1,4 +1,4 @@
-import utils
+from . import utils
 
 
 def invoke_with_str(function_name, function_args_str='', network=None):
@@ -8,7 +8,8 @@ def invoke_with_str(function_name, function_args_str='', network=None):
     if network == None:
         network = cfg['default_network']
 
-    print(f'Invoking "{name}" with {function_name} {function_args_str}')
+    print(
+        f'Invoking latest "{name}" contract on {network} with "{function_name} {function_args_str}"')
 
     cmd = '''\
         soroban contract invoke \

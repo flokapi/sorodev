@@ -1,7 +1,7 @@
 
 from pathlib import Path
 
-import utils
+from . import utils
 
 
 def deploy(network=None):

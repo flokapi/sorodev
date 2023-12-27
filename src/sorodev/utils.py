@@ -2,7 +2,7 @@ import json
 import subprocess
 
 
-import constants
+from . import constants
 
 
 def find_indentation(lines):
