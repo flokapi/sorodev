@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "sorodev"
-version = "0.0.13"
-description = "Publish multiple docker containers using nginx"
+version = "0.0.1"
+description = "Develop with soroban more efficiently"
 authors = ["flokapi <flokapi@pm.me>"]
 license = "GPL-3.0-only"
 readme = "README.md"
@@ -9,9 +9,9 @@ readme = "README.md"
 packages = [{ include = "sorodev", from = "src" }]
 
 [tool.poetry.urls]
-homepage = "https://github.com/flokapi/dockup"
-repository = "https://github.com/flokapi/dockup"
-documentation = "https://github.com/flokapi/dockup"
+homepage = "https://github.com/flokapi/sorodev"
+repository = "https://github.com/flokapi/sorodev"
+documentation = "https://github.com/flokapi/sorodev"
 
 [tool.poetry.dependencies]
 pyyaml = "*"

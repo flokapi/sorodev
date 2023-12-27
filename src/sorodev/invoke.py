@@ -1,42 +1,42 @@
 from . import utils
 
 
-def invoke_with_str(function_name, function_args_str='', network=None):
+def invoke(function_name, function_args={}, network=None, account=None):
+    if type(function_args) == dict:
+        function_args = ' '.join(
+            [f'--{key} {val}' for key, val in function_args.items()])
+
     cfg = utils.load_config()
     name = cfg['name']
 
     if network == None:
         network = cfg['default_network']
 
-    print(
-        f'Invoking latest "{name}" contract on {network} with "{function_name} {function_args_str}"')
+    if account == None:
+        account = cfg['default_account']
 
-    cmd = '''\
+    utils.log_action(
+        f'Invoking latest "{name}" contract on {network} from {account} with "{function_name} {function_args}"')
+
+    contract_address, error = utils.call(f'cat .soroban/{name}')
+    if error:
+        utils.exit_error(f'No deployment found')
+
+    print(f'Contract address: {contract_address}')
+
+    cmd = f'''\
         soroban contract invoke \
-            --id $(cat .soroban/{name}) \
-            --source alice \
+            --id {contract_address} \
+            --source {account} \
             --network {network} \
             -- \
                 {function_name} \
-                {function_args_str}
+                {function_args}
     '''
 
-    args = {
-        "name": name,
-        "network": network,
-        "function_name": function_name,
-        "function_args_str": function_args_str
-    }
-    output, error = utils.call(cmd.format(**args))
+    output, error = utils.call(cmd)
 
     if error:
         utils.exit_error(error)
 
     print(output)
-
-
-def invoke_with_dict(function_name, function_args={}, network=None):
-    function_args_str = ' '.join(
-        [f'--{key} {val}' for key, val in function_args.items()])
-
-    invoke_with_str(function_name, function_args_str)

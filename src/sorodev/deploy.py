@@ -11,7 +11,7 @@ def deploy(network=None):
     if network == None:
         network = cfg['default_network']
 
-    print(f'Deploying "{name}" to "{network}"')
+    utils.log_action(f'Deploying {name} to {network}')
     cmd = f'''\
         soroban contract deploy \
         --wasm target/wasm32-unknown-unknown/release/{name}.wasm \

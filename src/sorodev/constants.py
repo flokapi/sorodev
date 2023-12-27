@@ -1,3 +1,3 @@
 
 
-SOROBAN_DEV_FILE_NAME = 'soroban-dev.json'
+SOROBAN_DEV_FILE_NAME = 'sorodev.json'

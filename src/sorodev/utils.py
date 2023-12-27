@@ -1,5 +1,6 @@
 import json
 import subprocess
+import os
 
 
 from . import constants
@@ -57,6 +58,19 @@ def call(cmd):
     if error:
         error = error.decode()
     return output, error
+
+
+def is_in_sorodev_project():
+    return constants.SOROBAN_DEV_FILE_NAME in os.listdir()
+
+
+def check_in_sorodev_project():
+    if not is_in_sorodev_project():
+        exit_error('Not in a sorodev project')
+
+
+def log_action(msg):
+    print(f'\n###### {msg}')
 
 
 def exit_error(error_msg):

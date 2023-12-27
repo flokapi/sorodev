@@ -1,15 +1,17 @@
 from pathlib import Path
 
 
+from . import add_contract
 from . import utils
 from . import constants
 
 
-def write_soroban_dev_config(app_path, name, app_type):
+def write_soroban_dev_config(app_path, name):
     data = {
         'name': name,
-        'type': app_type,
-        'default_network': 'testnet'
+        'default_network': 'testnet',
+        'accounts': ['alice'],
+        'default_account': 'alice'
     }
 
     target = app_path.joinpath(constants.SOROBAN_DEV_FILE_NAME)
@@ -26,24 +28,14 @@ def write_gitignore(app_path):
     utils.write_lines(target, lines)
 
 
-def write_standalone_cargo_toml(app_path, name):
+def write_standalone_cargo_toml(app_path):
     lines = '''\
-        [package]
-        name = "{name}"
-        version = "0.1.0"
-        edition = "2021"
+        [workspace]
+        resolver = "2"
+        members = ["contracts/*"]
 
-        [lib]
-        crate-type = ["cdylib"]
-
-        [dependencies]
+        [workspace.dependencies]
         soroban-sdk = "20.0.0"
-
-        [dev_dependencies]
-        soroban-sdk = {{ version = "20.0.0", features = ["testutils"] }}
-
-        [features]
-        testutils = ["soroban-sdk/testutils"]
 
         [profile.release]
         opt-level = "z"
@@ -61,80 +53,20 @@ def write_standalone_cargo_toml(app_path, name):
     '''
 
     target = app_path.joinpath('Cargo.toml')
-    args = {
-        'name': name
-    }
-
-    utils.write_lines(target, lines, args)
-
-
-def write_default_lib_rs(app_path):
-    lines = '''\
-        #![no_std]
-        use soroban_sdk::{contract, contractimpl, symbol_short, vec, Env, Symbol, Vec};
-
-        #[contract]
-        pub struct Contract;
-
-        #[contractimpl]
-        impl Contract {
-            pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
-                vec![&env, symbol_short!("Hello"), to]
-            }
-        }
-        #[cfg(test)]
-        mod test;
-    '''
-
-    target = app_path.joinpath('src/lib.rs')
     utils.write_lines(target, lines)
 
 
-def write_default_test_rs(app_path):
-    lines = '''\
-        use crate::{Contract, ContractClient};
-        use soroban_sdk::{symbol_short, vec, Env};
-
-        #[test]
-        fn hello() {
-            let env = Env::default();
-            let contract_id = env.register_contract(None, Contract);
-            let client = ContractClient::new(&env, &contract_id);
-
-            let words = client.hello(&symbol_short!("Dev"));
-            assert_eq!(
-                words,
-                vec![&env, symbol_short!("Hello"), symbol_short!("Dev"),]
-            );
-        }
-    '''
-
-    target = app_path.joinpath('src/test.rs')
-    utils.write_lines(target, lines)
-
-
-def install_standalone_app(name):
-    print(f'Installing standalone app: {name}')
+def install_app(name):
+    utils.log_action(f'Installing standalone app: {name}')
 
     app_path = Path(name)
     app_path.mkdir(exist_ok=True)
 
-    src_path = app_path.joinpath('src')
-    src_path.mkdir(exist_ok=True)
+    contract_addr_path = app_path.joinpath('.soroban')
+    contract_addr_path.mkdir(exist_ok=True)
 
-    src_path = app_path.joinpath('.soroban')
-    src_path.mkdir(exist_ok=True)
-
-    write_soroban_dev_config(app_path, name, 'standalone')
-    write_standalone_cargo_toml(app_path, name)
-    write_default_lib_rs(app_path)
-    write_default_test_rs(app_path)
+    write_soroban_dev_config(app_path, name)
+    write_standalone_cargo_toml(app_path)
     write_gitignore(app_path)
 
-
-def install_astro_app(name):
-    print(f'installing astro app: {name}')
-
-
-def install_nextjs_app(name):
-    print(f'installing nextjs app: {name}')
+    add_contract.add_contract(name, app_path)
