@@ -17,9 +17,9 @@ The idea behind `sorodev` is to bring tools on top of `soroban-cli` . It can be 
 - build, test, deploy, fund account and make contract bindings with simple commands
 
 
+To sum up, Sorodev indends to make it easier for anyone to start developping on Soroban and to enable a more efficient development experience.
 
-To sum up, you can think of it as an equivalent of Hardhat for Soroban.
-
+However, it's recommended to understand both the [Soroban development setup](https://soroban.stellar.org/docs/category/getting-started) and [how Sorodev works](https://github.com/flokapi/sorodev/tree/main/src/sorodev).
 
 
 # Getting started
@@ -65,7 +65,6 @@ sorodev add-contract other_contract
 sorodev build
 sorodev test
 sorodev deploy
-sorodev make-binding example
 sorodev invoke hello --args "--to Sorodev"
 ```
 
@@ -74,17 +73,17 @@ sorodev invoke hello --args "--to Sorodev"
 ## Create an Astro project
 
 ```shell
-npm create astro@4.0.1 example --\
+npm create astro@4.0.1 example_astro --\
 	--template basics\
 	--install\ 
 	--no-git\
 	--typescript strictest
 	
-sorodev install-app example-astro
-cd example-astro
+sorodev install-app example_astro
+cd example_astro
 sorodev build
 sorodev deploy
-sorodev make-binding example-astro
+sorodev make-binding example_astro
 ```
 
 
@@ -96,14 +95,14 @@ In `pages/index.astro`, add the following lines:
 import Layout from "../layouts/Layout.astro";
 import Card from "../components/Card.astro";
 
-+ import { Contract, networks } from "example2-client";
++ import { Contract, networks } from "example_astro-client";
 
 + const greeter = new Contract({
 +   ...networks.testnet,
 +   rpcUrl: "https://soroban-testnet.stellar.org", // from https://soroban.stellar.org/docs/reference/rpc#public-rpc-providers
 + });
 + 
-+ const { result } = await greeter.hello({ to: "Soroban" });
++ const { result } = await greeter.hello({ to: "Sorodev" });
 ---
 ```
 
@@ -118,10 +117,10 @@ import Card from "../components/Card.astro";
 
 In the `package.json`, add the following script:
 
-```json
+```
 "scripts": {
     ...
-    "postinstall": "sorodev build && sorodev deploy && sorodev make-binding example"
+    "postinstall": "sorodev build && sorodev deploy && sorodev make-binding example_astro"
 }
 ```
 
@@ -133,7 +132,7 @@ Then run:
 npm i
 npm run dev
 ```
-
+Then open `http://localhost:4321/`, you should see `Hello Sorodev`.
 
 
 ## Create a Next.js project
