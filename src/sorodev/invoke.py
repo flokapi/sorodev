@@ -1,38 +1,45 @@
 from . import utils
 
 
-def invoke(function_name, function_args={}, network=None, account=None):
+def invoke(
+    function_name, function_args={}, contract_name=None, network=None, source=None
+):
     if type(function_args) == dict:
-        function_args = ' '.join(
-            [f'--{key} {val}' for key, val in function_args.items()])
+        function_args = " ".join(
+            [f"--{key} {val}" for key, val in function_args.items()]
+        )
 
     cfg = utils.load_config()
-    name = cfg['name']
+
+    if contract_name == None:
+        contract_name = cfg["main_contract"]
 
     if network == None:
-        network = cfg['default_network']
+        network = cfg["default_network"]
 
-    if account == None:
-        account = cfg['default_account']
+    if source == None:
+        source = cfg["default_account"]
 
     utils.log_action(
-        f'Invoking latest "{name}" contract on {network} from {account} with "{function_name} {function_args}"')
+        f'Invoking latest "{contract_name}" contract on {network} from {source} with "{function_name} {function_args}"'
+    )
 
-    contract_address, error = utils.call(f'cat .soroban/{name}')
+    cmd = f"cat .soroban/{contract_name}-id"
+    contract_address, error = utils.call(cmd)
     if error:
-        utils.exit_error(f'No deployment found')
+        utils.exit_error(f"No deployment found")
 
-    print(f'Contract address: {contract_address}')
+    print(f"Contract address: {contract_address}")
 
-    cmd = f'''\
+    cmd = f"""\
         soroban contract invoke \
             --id {contract_address} \
-            --source {account} \
+            --source {source} \
             --network {network} \
             -- \
                 {function_name} \
                 {function_args}
-    '''
+    """
 
     output, error = utils.call(cmd)
 

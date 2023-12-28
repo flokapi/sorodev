@@ -18,6 +18,9 @@ pyyaml = "*"
 python = "^3.7"
 platformdirs = "*"
 
+[tool.poetry.scripts]
+sorodev = 'sorodev.__main__:main'
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
