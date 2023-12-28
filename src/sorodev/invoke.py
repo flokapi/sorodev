@@ -2,7 +2,11 @@ from . import utils
 
 
 def invoke(
-    function_name, function_args={}, contract_name=None, network=None, source=None
+    contract_name,
+    function_name,
+    function_args={},
+    network=None,
+    source=None,
 ):
     if type(function_args) == dict:
         function_args = " ".join(
@@ -47,3 +51,4 @@ def invoke(
         utils.exit_error(error)
 
     print(output)
+    print("Done")

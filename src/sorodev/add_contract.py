@@ -87,3 +87,5 @@ def add_contract(name):
     write_contract_cargo_toml(contract_path, name)
     write_default_test_rs(src_path)
     write_default_lib_rs(src_path)
+
+    print("Done")

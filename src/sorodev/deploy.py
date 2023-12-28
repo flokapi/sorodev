@@ -33,4 +33,7 @@ def deploy(contract_name=None, network=None, source=None):
         utils.exit_error(f"Could not extract contract address from: {output}")
 
     print(f"Contract address: {contract_address}")
+
     Path(f".soroban/{contract_name}-id").write_text(contract_address)
+
+    print("Done")

@@ -10,12 +10,14 @@ It is designed for Linux systems (Debian, WSL, ...)
 
 While [soroban-cli](https://soroban.stellar.org/docs/reference/soroban-cli) is like a Swiss knife to interact with Soroban, it also requires many arguments and parameters to specify the context, such as the current network being used, the last deployment addresses, ...
 
-The idea behind `sorodev` is to bring tools on top of `soroban-cli` . It can be used to:
+Similarly, Rust is a generic and customizable language, which requires to replicate the same patterns for each contract.
 
+The idea behind `sorodev` is to provide the setup to get started with a development on Soroban and to bring some tools on top of `soroban-cli`.
+
+For example:
 - create new Soroban projects and contracts (create default `Cargo.toml`, `lib.rs`, `test.rs`)
 - use a `sorodev.json` to configure the current parameters
-- build, test, deploy, fund account and make contract bindings with simple commands
-
+- build, test, deploy, invoke contracts, or make contract bindings with simple commands
 
 To sum up, Sorodev indends to make it easier for anyone to start developping on Soroban and to enable a more efficient development experience.
 
@@ -59,13 +61,16 @@ pip install sorodev
 ## Standalone project
 
 ```shell
-sorodev install-app example
+mkdir example
 cd example
-sorodev add-contract other_contract
+
+sorodev install
+sorodev add-contract hello_soroban
+sorodev add-account alice
 sorodev build
 sorodev test
-sorodev deploy
-sorodev invoke hello --args "--to Sorodev"
+sorodev deploy hello_soroban
+sorodev invoke hello_soroban hello --args "--to Sorodev"
 ```
 
 
@@ -75,17 +80,19 @@ sorodev invoke hello --args "--to Sorodev"
 ```shell
 npm create astro@4.0.1 example_astro --\
 	--template basics\
-	--install\ 
+	--install\
 	--no-git\
 	--typescript strictest
-	
-sorodev install-app example_astro
-cd example_astro
-sorodev build
-sorodev deploy
-sorodev make-binding example_astro
-```
 
+cd example_astro
+
+sorodev install
+sorodev add-contract hello_soroban
+sorodev add-account alice
+sorodev build
+sorodev deploy hello_soroban
+sorodev make-binding hello_soroban
+```
 
 
 In `pages/index.astro`, add the following lines:
@@ -95,11 +102,11 @@ In `pages/index.astro`, add the following lines:
 import Layout from "../layouts/Layout.astro";
 import Card from "../components/Card.astro";
 
-+ import { Contract, networks } from "example_astro-client";
++ import { Contract, networks } from "hello_soroban-client";
 
 + const greeter = new Contract({
 +   ...networks.testnet,
-+   rpcUrl: "https://soroban-testnet.stellar.org", // from https://soroban.stellar.org/docs/reference/rpc#public-rpc-providers
++   rpcUrl: "https://soroban-testnet.stellar.org",
 + });
 + 
 + const { result } = await greeter.hello({ to: "Sorodev" });
@@ -120,7 +127,7 @@ In the `package.json`, add the following script:
 ```
 "scripts": {
     ...
-    "postinstall": "sorodev build && sorodev deploy && sorodev make-binding example_astro"
+    "postinstall": "sorodev build && sorodev deploy hello_soroban && sorodev make-binding hello_soroban"
 }
 ```
 

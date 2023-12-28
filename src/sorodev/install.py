@@ -3,35 +3,34 @@ import os
 
 
 from . import add_contract
-from . import account
 from . import utils
 from . import constants
 
 
-def write_soroban_dev_config(app_path, name):
+def write_soroban_dev_config():
     data = {
-        "main_contract": name,
+        "main_contract": None,
         "default_network": "testnet",
         "accounts": ["alice"],
         "default_account": "alice",
         "binding_type": "typescript",
     }
 
-    target = app_path.joinpath(constants.SOROBAN_DEV_FILE_NAME)
+    target = Path(constants.SOROBAN_DEV_FILE_NAME)
     utils.write_json(target, data)
 
 
-def write_gitignore(app_path):
+def write_gitignore():
     lines = """\
         .soroban/
         target/
     """
 
-    target = app_path.joinpath(".gitignore")
+    target = Path(".gitignore")
     utils.write_lines(target, lines)
 
 
-def write_standalone_cargo_toml(app_path):
+def write_standalone_cargo_toml():
     lines = """\
         [workspace]
         resolver = "2"
@@ -55,23 +54,21 @@ def write_standalone_cargo_toml(app_path):
         debug-assertions = true
     """
 
-    target = app_path.joinpath("Cargo.toml")
+    target = Path("Cargo.toml")
     utils.write_lines(target, lines)
 
 
-def install_app(name):
-    utils.log_action(f"Installing standalone app: {name}")
+def install():
+    if utils.is_in_sorodev_project():
+        utils.exit_error("Sorodev project already initialized")
 
-    app_path = Path(name)
-    app_path.mkdir(exist_ok=True)
+    utils.log_action(f"Installing in: {os.getcwd()}")
 
-    contract_addr_path = app_path.joinpath(".soroban")
+    contract_addr_path = Path(".soroban")
     contract_addr_path.mkdir(exist_ok=True)
 
-    write_soroban_dev_config(app_path, name)
-    write_standalone_cargo_toml(app_path)
-    write_gitignore(app_path)
+    write_soroban_dev_config()
+    write_standalone_cargo_toml()
+    write_gitignore()
 
-    os.chdir(app_path)
-    add_contract.add_contract(name)
-    # account.add_account('alice')
+    print("Done")

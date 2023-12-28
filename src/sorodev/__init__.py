@@ -1,5 +1,6 @@
-from sorodev.install_app import install_app
+from sorodev.install import install
 from sorodev.add_contract import add_contract
+from sorodev.account import add_account
 from sorodev.build import build
 from sorodev.test import test
 from sorodev.bindings import make_binding

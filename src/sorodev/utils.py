@@ -8,10 +8,10 @@ from . import constants
 
 def find_indentation(lines):
     min_leading_spaces = None
-    for line in lines.split('\n'):
-        if line.strip() == '':
+    for line in lines.split("\n"):
+        if line.strip() == "":
             continue
-        num_leading_spaces = len(line) - len(line.lstrip(' '))
+        num_leading_spaces = len(line) - len(line.lstrip(" "))
         if min_leading_spaces == None:
             min_leading_spaces = num_leading_spaces
         elif num_leading_spaces < min_leading_spaces:
@@ -21,16 +21,16 @@ def find_indentation(lines):
 
 def write_lines(target_path, lines, args={}):
     indent = find_indentation(lines)
-    with open(target_path, 'w') as f:
-        for line in lines.split('\n'):
+    with open(target_path, "w") as f:
+        for line in lines.split("\n"):
             if args:
-                f.write(line[indent:].format(**args)+'\n')
+                f.write(line[indent:].format(**args) + "\n")
             else:
-                f.write(line[indent:]+'\n')
+                f.write(line[indent:] + "\n")
 
 
 def write_json(target_path, data):
-    with open(target_path, 'w+') as f:
+    with open(target_path, "w+") as f:
         f.write(json.dumps(data, sort_keys=True, indent=4))
 
 
@@ -51,7 +51,8 @@ def save_config(data):
 
 def call(cmd):
     process = subprocess.Popen(
-        cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
     output, error = process.communicate()
     if output:
         output = output.decode()
@@ -66,14 +67,14 @@ def is_in_sorodev_project():
 
 def check_in_sorodev_project():
     if not is_in_sorodev_project():
-        exit_error('Not in a sorodev project')
+        exit_error("Not in a sorodev project")
 
 
 def log_action(msg):
-    print(f'\n###### {msg}')
+    print(f"###### {msg}")
 
 
 def exit_error(error_msg):
-    print('========== Failed ==========')
+    print("========== Failed ==========")
     print(error_msg)
     exit()

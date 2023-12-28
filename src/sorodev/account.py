@@ -13,7 +13,7 @@ def create_account(name):
     if error:
         utils.exit_error(error)
 
-    print(f"Accound {name} created with address {address}")
+    print(f"Account {name} created with address {address.strip()}")
 
 
 def fund_account(name, network=None):
@@ -31,10 +31,12 @@ def fund_account(name, network=None):
 
 
 def add_account(name):
+    utils.log_action(f"Adding account {name}")
+
     create_account(name)
     fund_account(name)
 
     cfg = utils.load_config()
     if name not in cfg["accounts"]:
-        cfg["accouts"].append(name)
+        cfg["accounts"].append(name)
     utils.save_config(cfg)
